@@ -1,0 +1,45 @@
+version: '3.5'
+services:
+  presto:
+    build:
+      context: .
+      dockerfile: Dockerfile.presto
+    ports:
+      - "8080:8080"
+    depends_on:
+      - hive-hiveserver
+
+  hive-metastore:
+    build:
+      context: .
+      dockerfile: Dockerfile.hive
+    ports:
+      - "9083:9083"
+    depends_on:
+      - hive-metastore-db
+    command: ["./bin/hive", "--service", "metastore"]
+
+  hive-hiveserver:
+    build:
+      context: .
+      dockerfile: Dockerfile.hive
+    environment:
+      HIVE_CORE_CONF_javax_jdo_option_ConnectionURL: "jdbc:postgresql://hive-metastore/metastore"
+    ports:
+      - "10000:10000"
+    depends_on:
+      - hive-metastore
+    command: ["./bin/hiveserver2"]
+
+  hive-metastore-db:
+    image: postgres
+    environment:
+      POSTGRES_USER: "root"
+      POSTGRES_PASSWORD: "password"
+      POSTGRES_DB: "metastore"
+    ports:
+      - "5433:5432"
+
+networks:
+  default:
+    name: dbt-net
