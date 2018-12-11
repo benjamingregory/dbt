@@ -29,7 +29,8 @@ services:
       - "10000:10000"
     depends_on:
       - hive-metastore
-    command: ["./bin/hiveserver2"]
+    command: ["./run_hiveserver.sh"]
+    # command: ["./bin/hiveserver2"]
 
   hive-metastore-db:
     image: postgres
@@ -37,8 +38,6 @@ services:
       POSTGRES_USER: "root"
       POSTGRES_PASSWORD: "password"
       POSTGRES_DB: "metastore"
-    ports:
-      - "5433:5432"
 
 networks:
   default:

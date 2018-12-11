@@ -14,9 +14,9 @@ RUN mkdir ${HADOOP_HOME} && \
   rm hadoop.tar.gz
 
 RUN ${HADOOP_HOME}/bin/hadoop fs -mkdir -p /tmp
-RUN ${HADOOP_HOME}/bin/hadoop fs -mkdir -p ${HOME}/warehouse
+RUN ${HADOOP_HOME}/bin/hadoop fs -mkdir -p /user/hive/warehouse
 RUN ${HADOOP_HOME}/bin/hadoop fs -chmod g+w /tmp
-RUN ${HADOOP_HOME}/bin/hadoop fs -chmod g+w ${HOME}/warehouse
+RUN ${HADOOP_HOME}/bin/hadoop fs -chmod g+w /user/hive/warehouse
 
 ENV HIVE_VERSION 2.3.4
 ENV HIVE_HOME /opt/hive
@@ -27,5 +27,8 @@ RUN mkdir ${HIVE_HOME} && \
 	rm hive.tar.gz
 
 COPY hive_conf/hive-site.xml ${HIVE_HOME}/conf/
+COPY run_hiveserver.sh ${HIVE_HOME}
+RUN chmod +x ${HIVE_HOME}/run_hiveserver.sh
 
 WORKDIR ${HIVE_HOME}
+
