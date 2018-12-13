@@ -2,8 +2,8 @@ version: '3.5'
 services:
   presto:
     build:
-      context: .
-      dockerfile: Dockerfile.presto
+      context: ./presto
+      dockerfile: Dockerfile
     ports:
       - "8080:8080"
     depends_on:
@@ -11,25 +11,25 @@ services:
 
   hive-metastore:
     build:
-      context: .
-      dockerfile: Dockerfile.hive
+      context: ./hive
+      dockerfile: Dockerfile
+    image: hive-metastore:current
     ports:
       - "9083:9083"
     depends_on:
       - hive-metastore-db
-    command: ["./bin/hive", "--service", "metastore"]
+      - hadoop  # this is an image building dependency, not a service dependency, for now
+    command: ["hive", "--service", "metastore"]
 
   hive-hiveserver:
-    build:
-      context: .
-      dockerfile: Dockerfile.hive
+    image: hive-metastore:current
     environment:
       HIVE_CORE_CONF_javax_jdo_option_ConnectionURL: "jdbc:postgresql://hive-metastore/metastore"
     ports:
       - "10000:10000"
     depends_on:
       - hive-metastore
-    command: ["./run_hiveserver.sh"]
+    command: ["run_hiveserver.sh"]
     # command: ["./bin/hiveserver2"]
 
   hive-metastore-db:
@@ -39,11 +39,12 @@ services:
       POSTGRES_PASSWORD: "password"
       POSTGRES_DB: "metastore"
 
-  hadoop-namenode:
+  hadoop:
     build:
       context: ./hadoop
       dockerfile: Dockerfile
-    image: hadoop-namenode:current
+    image: hadoop:current
+    command: ["run_yarn.sh"]
 
 networks:
   default:

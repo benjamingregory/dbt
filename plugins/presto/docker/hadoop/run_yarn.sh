@@ -1,6 +1,9 @@
 #!/bin/sh
 
-PATH=$PATH:/opt/hadoop/bin
+service ssh start
+source ${HADOOP_HOME}/etc/hadoop/hadoop-env.sh
+${HADOOP_HOME}/sbin/start-dfs.sh
+${HADOOP_HOME}sbin/start-yarn.sh
 
-yarn resourcemanager&
-yarn nodemanager
+# idk
+while true; do sleep 100; done

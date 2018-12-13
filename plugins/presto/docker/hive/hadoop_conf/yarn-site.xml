@@ -10,21 +10,14 @@
   See the License for the specific language governing permissions and
   limitations under the License. See accompanying LICENSE file.
 -->
+<!-- maybe I need this? -->
 <configuration>
   <property>
-    <name>yarn.nodemanager.aux-services</name>
-    <value>mapreduce_shuffle</value>
-  </property>
-  <!-- <property>
-    <name>yarn.nodemanager.aux-services.mapreduce.shuffle.class</name>
-    <value>org.apache.hadoop.mapred.ShuffleHandler</value>
-  </property>
-  <property>
     <name>yarn.resourcemanager.hostname</name>
-    <value>localhost</value>
+    <value>hadoop</value>
   </property>
   <property>
     <name>yarn.nodemanager.hostname</name>
-    <value>localhost</value>
-  </property> -->
+    <value>hadoop</value>
+  </property>
 </configuration>

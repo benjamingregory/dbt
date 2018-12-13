@@ -15,37 +15,37 @@ RUN mkdir ${HADOOP_HOME} && \
   tar -xf hadoop.tar.gz -C ${HADOOP_HOME} --strip-components=1 && \
   rm hadoop.tar.gz
 
-# set up ssh for passwordless auth
-# TODO: I don't think I need this if I don't have a cluster
-# RUN ssh-keygen -q -N "" -t rsa -f /root/.ssh/id_rsa
-# RUN cp /root/.ssh/id_rsa.pub /root/.ssh/authorized_keys
-# RUN service ssh start
-# # Do I need this?
-# # RUN sed -i 's/^UsePAM yes/UsePAM no/g'
+# set up ssh for passwordless auth so the hive image can talk to the hadoop image
+RUN ssh-keygen -q -N "" -t rsa -f /root/.ssh/id_rsa
+RUN cp /root/.ssh/id_rsa.pub /root/.ssh/authorized_keys
+COPY ssh-config /root/.ssh/config
+RUN service ssh start
+# Do I need this?
+# RUN sed -i 's/^UsePAM yes/UsePAM no/g'
 
 # copy our local configs over
 COPY conf/* ${HADOOP_CONF_DIR}/
+RUN sed -i "s#^export JAVA_HOME=.*#export JAVA_HOME=${JAVA_HOME}#g" ${HADOOP_CONF_DIR}/hadoop-env.sh
+
+ENV PATH ${PATH}:${HADOOP_HOME}/bin
 
 # helper script that starts sshd and runs an hdfs command (requires the passwordless auth + ssh + hdfs working)
 # TODO: I don't think I need this if I don't have a cluster
-# COPY run_hdfs.sh /usr/local/bin
-# RUN chmod +x /usr/local/bin/run_hdfs.sh
-
-# RUN run_hdfs.sh -mkdir -p /user/root
-# RUN run_hdfs.sh -put ${HADOOP_HOME}/etc/hadoop/ input
+COPY run_hdfs.sh /usr/local/bin
+RUN chmod +x /usr/local/bin/run_hdfs.sh
 
 COPY run_yarn.sh /usr/local/bin
 RUN chmod +x /usr/local/bin/run_yarn.sh
 
 # our config sets hadoop.tmp.dir to /hadoop, and these values derive from that.
 RUN mkdir -p /hadoop/dfs/data /hadoop/dfs/name /hadoop/dfs/namesecondary && \
-    ${HADOOP_HOME}/bin/hdfs namenode -format
+    hdfs namenode -format
 VOLUME /hadoop
 
 # 9000 - metadata
 # 50010 - data
 # 50020 - IPC
 # 22 - ssh
-EXPOSE 9000 50010 50020
+EXPOSE 9000 50010 50020 22
 
-CMD ["/opt/hadoop/bin/hdfs"]
+CMD ["hdfs"]

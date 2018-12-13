@@ -19,9 +19,8 @@
 <configuration>
   <property>
     <name>fs.default.name</name>
-    <!-- TODO: this should be configured via the cli (so at runtime via environment variables) -->
-    <!-- <value>hdfs://hadoop-namenode:9000</value> -->
-    <value>hdfs://localhost:9000</value>
+    <!-- this is the listen address when we're the hadoop server -->
+    <value>hdfs://0.0.0.0:9000</value>
   </property>
   <property>
     <!--  -->
