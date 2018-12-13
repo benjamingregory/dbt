@@ -7,7 +7,7 @@ services:
     ports:
       - "8080:8080"
     depends_on:
-      - hive-hiveserver
+      - hive-metastore
 
   hive-metastore:
     build:
@@ -38,6 +38,12 @@ services:
       POSTGRES_USER: "root"
       POSTGRES_PASSWORD: "password"
       POSTGRES_DB: "metastore"
+
+  hadoop-namenode:
+    build:
+      context: ./hadoop
+      dockerfile: Dockerfile
+    image: hadoop-namenode:current
 
 networks:
   default:
