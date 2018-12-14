@@ -3,7 +3,7 @@ services:
   presto:
     build:
       context: ./presto
-      dockerfile: Dockerfile
+      # dockerfile: Dockerfile
     ports:
       - "8080:8080"
     depends_on:
@@ -12,8 +12,8 @@ services:
   hive-metastore:
     build:
       context: ./hive
-      dockerfile: Dockerfile
-    image: hive-metastore:current
+      # dockerfile: Dockerfile
+    image: hive:current
     ports:
       - "9083:9083"
     depends_on:
@@ -22,7 +22,7 @@ services:
     command: ["hive", "--service", "metastore"]
 
   hive-hiveserver:
-    image: hive-metastore:current
+    image: hive:current
     environment:
       HIVE_CORE_CONF_javax_jdo_option_ConnectionURL: "jdbc:postgresql://hive-metastore/metastore"
     ports:
@@ -42,7 +42,7 @@ services:
   hadoop:
     build:
       context: ./hadoop
-      dockerfile: Dockerfile
+      # dockerfile: Dockerfile
     image: hadoop:current
     command: ["run_yarn.sh"]
 

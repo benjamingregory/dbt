@@ -48,4 +48,7 @@ VOLUME /hadoop
 # 22 - ssh
 EXPOSE 9000 50010 50020 22
 
+# no idea - yarn stuff?
+EXPOSE 8030 8031 8032 8040
+
 CMD ["hdfs"]

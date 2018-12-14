@@ -1,4 +1,4 @@
-FROM hadoop:current
+FROM hive:current
 
 ENV PRESTO_HOME /opt/presto
 ENV PRESTO_VERSION 0.214
